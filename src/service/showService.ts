@@ -19,14 +19,14 @@ export const getShows = async(page: number): Promise<Show[]> => {
       page: page as unknown as string,
     }).toString();
   
-    const url = `https://api.tvmaze.com/shows?${query}`;
+    const url = `https://api.tvmaz.com/shows?${query}`;
   
     const response = await axios.get(url, {
       headers: {
         Accept: 'application/json'
       }
     }).catch((error) => {
-      throw new Error(error)
+      throw new Error(error.message)
     })
   
     return response.data as Show[];

@@ -1,8 +1,8 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
-import {getShows} from "../service/showService";
-import type { Show } from '../model/show'
+import { getShows } from "../service/showService";
+import type { Show } from "../model/show";
 
 export const useShowsStore = defineStore("shows", () => {
   const shows = ref<Show[]>([]);
@@ -22,19 +22,18 @@ export const useShowsStore = defineStore("shows", () => {
     isLoading.value = true;
     error.value = "";
 
-    try {
-      const result = await getShows(page.value);
+    await getShows(page.value)
+      .then((response) => {
+        shows.value = shows.value.concat(response);
+        page.value++;
 
-      shows.value = shows.value.concat(result);
-      page.value++;
-
-      if (result.length === 0) {
-        hasMoreShows.value = false;
-      }
-    } catch (e) {
-      const err = e as Error;
-      error.value = err.message;
-    }
+        if (response.length === 0) {
+          hasMoreShows.value = false;
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 
   const showsCount = computed(() => shows.value.length);

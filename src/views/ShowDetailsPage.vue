@@ -1,81 +1,79 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
 
-import { getShow }from '../service/showService'
-import type { Show } from '../model/show'
-
+import { getShow } from "../service/showService";
+import type { Show } from "../model/show";
 
 // Get the id of the movie from the url
-const route = useRoute()
-const id = route.params.id as unknown as number
+const route = useRoute();
+const id = route.params.id as unknown as number;
 
 // Load the show details
-const show = ref<Show | null>(null)
-const isLoading = ref(false)
-const error = ref('')
+const show = ref<Show | null>(null);
+const isLoading = ref(false);
+const error = ref("");
 
 const loadShow = async () => {
-  isLoading.value = true
-  error.value = ''
-
-  try {
-     await getShow(id).then((response) => {
-        show.value = response
+  isLoading.value = true;
+  error.value = "";
+  await getShow(id)
+    .then((response) => {
+      show.value = response;
     })
-  } catch (e) {
-    const err = e as Error
-    error.value = err.message
-  } finally {
-    isLoading.value = false
-  }
-}
+    .catch((error) => {
+      error.value = error.message;
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 onMounted(async () => {
-  loadShow()
-})
+  loadShow();
+});
 </script>
 
 <template>
   <div class="ShowDetails">
-   
     <div v-if="error || !show" class="ShowDetails__Reload">
       <p class="error">Something went wrong !!</p>
     </div>
 
     <!-- <template v-else> -->
-      <div class="ShowDetails__Columns shadow-13">
-        <div class="ShowDetails__Columns__Poster">
-          <img :src="show?.image?.medium" :name="show?.name" />
-        </div>
-
-        <div class="ShowDetails__Columns__Info">
-          <h1 class="text-h4 no-top-margin">{{ show?.name }}</h1>
-
-          <h2 class="text-h5">Summary</h2>
-          <div v-html="show?.summary" />
-
-          <h2 class="text-h5">Genre</h2>
-          <div>
-            <span v-for="genre in show?.genres" :key="genre" class="genre">{{ genre }}</span>
-          </div>
-
-          <h2 class="text-h5">Premiere</h2>
-          <div>{{ show?.premiered }}</div>
-
-          <h2 class="text-h5">Language</h2>
-          <div>{{ show?.language }}</div>
-
-          <h2 class="text-h5">Status</h2>
-          <div>{{ show?.status }}</div>
-         
-        </div>
-        <div>
-            <RouterLink :to="`/`">
-            <button class="backButton">BACK</button>
-            </RouterLink>
-          </div>
+    <div class="ShowDetails__Columns shadow-13">
+      <div class="ShowDetails__Columns__Poster">
+        <img :src="show?.image?.medium" :name="show?.name" />
       </div>
+
+      <div class="ShowDetails__Columns__Info">
+        <h1 class="text-h4 no-top-margin">{{ show?.name }}</h1>
+
+        <h2 class="text-h5">Summary</h2>
+        <div v-html="show?.summary" />
+
+        <h2 class="text-h5">Genre</h2>
+        <div>
+          <span v-for="genre in show?.genres" :key="genre" class="genre">{{
+            genre
+          }}</span>
+        </div>
+
+        <h2 class="text-h5">Premiere</h2>
+        <div>{{ show?.premiered }}</div>
+
+        <h2 class="text-h5">Language</h2>
+        <div>{{ show?.language }}</div>
+
+        <h2 class="text-h5">Status</h2>
+        <div>{{ show?.status }}</div>
+      </div>
+      <div>
+        <RouterLink :to="`/`">
+          <button class="backButton">BACK</button>
+        </RouterLink>
+      </div>
+    </div>
     <!-- </template> -->
   </div>
 </template>
@@ -125,14 +123,12 @@ onMounted(async () => {
     }
   }
 
-  .backButton{
+  .backButton {
     background-color: white;
     color: black;
     border: none;
     border-radius: 15px;
     padding: 10px 20px;
   }
-
-
 }
 </style>

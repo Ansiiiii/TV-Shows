@@ -11,16 +11,16 @@ export const useShowSearchStore = defineStore('showSearch', () => {
   const error = ref<string>('')
 
   const findShows = async (searchTerm: string) => {
-    error.value = ''
-    try {
-      const result = await getSearchShows(searchTerm)
-      isLoading.value = true
-      searchResults.value = result
-    } catch (e) {
-      const err = e as Error
-      error.value = err.message
-    }
-  }
+    error.value = "";
+    await getSearchShows(searchTerm)
+      .then((response) => {
+        isLoading.value = true;
+        searchResults.value = response;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
 
   return { searchResults, isLoading, error, findShows }
 })
