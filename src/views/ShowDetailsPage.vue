@@ -12,17 +12,16 @@ const id = route.params.id as unknown as number;
 // Load the show details
 const show = ref<Show | null>(null);
 const isLoading = ref(false);
-const error = ref("");
+const errorMessage = ref<string>('');
 
 const loadShow = async () => {
   isLoading.value = true;
-  error.value = "";
   await getShow(id)
     .then((response) => {
       show.value = response;
     })
     .catch((error) => {
-      error.value = error.message;
+      errorMessage.value = error;
     })
     .finally(() => {
       isLoading.value = false;
@@ -36,11 +35,11 @@ onMounted(async () => {
 
 <template>
   <div class="ShowDetails">
-    <div v-if="error || !show" class="ShowDetails__Reload">
-      <p class="error">Something went wrong !!</p>
+    <div v-if="errorMessage || !show" class="ShowDetails__Reload">
+      <h1 class="error">{{ errorMessage }}</h1>
     </div>
 
-    <!-- <template v-else> -->
+    <template v-else>
     <div class="ShowDetails__Columns shadow-13">
       <div class="ShowDetails__Columns__Poster">
         <img :src="show?.image?.medium" :name="show?.name" />
@@ -74,7 +73,7 @@ onMounted(async () => {
         </RouterLink>
       </div>
     </div>
-    <!-- </template> -->
+    </template>
   </div>
 </template>
 
