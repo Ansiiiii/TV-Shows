@@ -14,7 +14,7 @@ describe('ShowsList', () => {
         shows: [],
         hasMore: false,
         isLoading: false,
-
+        errorMessage:'',
         isHorizontal: false
       }
     })

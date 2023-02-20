@@ -41,6 +41,7 @@ const searchResults = () => {
   </template>
   <template v-else-if="errorMessage">
     <ShowsList
+      v-if="searchValue"
       title="Search Results not found"
       :error-message="errorMessage"
     />
